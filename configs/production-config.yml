@@ -1,0 +1,6 @@
+port: "9856"
+db:
+  host: "db"
+  port: "5412"
+  dbname: "pastebay"
+  sslmode: "disable"
