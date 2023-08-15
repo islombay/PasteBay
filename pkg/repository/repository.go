@@ -13,6 +13,7 @@ type Paste interface {
 	GetPaste(id uint) (models.PasteModel, error)
 	AddPaste(model models.PasteModel) (uint, error)
 	DeletePaste(id uint) error
+	UpdateViewsCount(id, views uint) error
 }
 
 type Repository struct {

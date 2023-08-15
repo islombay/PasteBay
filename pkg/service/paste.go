@@ -67,11 +67,14 @@ func (s *PasteService) GetPaste(hash string, passKeyList ...models.RequestGetPas
 		Author: models.ResponseAuthorPasteView{
 			Username: author.Username,
 		},
-		Title:     pasteModel.Title,
-		PasteType: pasteModel.PasteType,
-		Content:   pasteModel.BlobSrc,
+		Title:      pasteModel.Title,
+		PasteType:  pasteModel.PasteType,
+		Content:    pasteModel.BlobSrc,
+		ViewsCount: pasteModel.ViewsCount,
 	}
 	//fmt.Printf("Service later: %#v\n", viewObj)
+
+	s.checkViewLimit(pasteModel)
 	return viewObj, nil
 }
 
@@ -79,10 +82,17 @@ func (s *PasteService) AddPaste(model models.RequestAddPaste) (string, error) {
 	var modelbased models.PasteModel
 	changeStructs(&model, &modelbased)
 
-	modelbased.BlobSrc = model.Content
+	if model.ExpireTimeMilliseconds == 0 {
+		modelbased.ExpireTime = time.Date(1, 1, 1, 0, 0, 0, 0, time.UTC)
+	} else {
+		modelbased.ExpireTime = time.Now().Add(time.Millisecond * time.Duration(model.ExpireTimeMilliseconds))
+	}
 
-	if model.PasteType == 0 {
-		model.PasteType = 1
+	modelbased.BlobSrc = model.Content
+	modelbased.ViewsCount = 0
+
+	if modelbased.PasteType == 0 {
+		modelbased.PasteType = 1
 	}
 
 	if len(modelbased.AccessPassword) != 0 {
@@ -106,7 +116,24 @@ func (s *PasteService) checkValidity(model models.PasteModel) bool {
 			isValid = false
 		}
 	}
+
 	return isValid
+}
+
+func (s *PasteService) checkViewLimit(model models.PasteModel) error {
+	if model.ViewsLimit != 0 {
+		current := model.ViewsCount + 1
+		if current == model.ViewsLimit {
+			_ = s.repo.DeletePaste(model.ID)
+		} else {
+			if err := s.repo.UpdateViewsCount(model.ID, current); err != nil {
+				logrus.Error(err.Error())
+				return err
+			}
+		}
+	}
+
+	return nil
 }
 
 func generatePasteHash(password string) string {

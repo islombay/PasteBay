@@ -15,6 +15,7 @@ type PasteModel struct {
 	BlobSrc        string
 	ExpireTime     time.Time
 	ViewsLimit     uint
+	ViewsCount     uint
 	AccessPassword string
 }
 

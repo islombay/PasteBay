@@ -7,9 +7,10 @@ type ResponsePasteView struct {
 	CreatedAt time.Time               `json:"created_at"`
 	Author    ResponseAuthorPasteView `json:"author"`
 
-	Title     string `json:"title"`
-	PasteType uint8  `json:"paste_type"` // 2 - private 1 - public
-	Content   string `json:"content"`
+	Title      string `json:"title"`
+	PasteType  uint8  `json:"paste_type"` // 2 - private 1 - public
+	Content    string `json:"content"`
+	ViewsCount uint   `json:"views_count"`
 }
 
 // this is only for ResponsePasteView

@@ -37,3 +37,10 @@ func (r *PasteRepository) DeletePaste(id uint) error {
 	}
 	return nil
 }
+
+func (r *PasteRepository) UpdateViewsCount(id, views uint) error {
+	if res := r.db.Model(&models.PasteModel{}).Where("id = ?", id).Update("views_count", views); res.Error != nil {
+		return res.Error
+	}
+	return nil
+}
