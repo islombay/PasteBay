@@ -13,3 +13,9 @@ type RequestGetPaste struct {
 	ID       uint   `json:"id"`
 	Password string `json:"password"`
 }
+
+type UserRegister struct {
+	Username  string `json:"username" binding:"required"`
+	EmailAddr string `json:"email" binding:"required"`
+	Password  string `json:"password" binding:"required"`
+}
