@@ -1,6 +1,10 @@
-port: "9874"
-db:
+server:
+  port: "9874"
+  alias_path: "/paste"
   host: "localhost"
+db:
   port: "5432"
   dbname: "pastebay"
   sslmode: "disable"
+blob:
+  path: "data"

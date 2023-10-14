@@ -3,3 +3,5 @@
 
 configs/routes.txt
 configs/database.json
+
+data/

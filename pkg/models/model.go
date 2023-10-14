@@ -5,7 +5,7 @@ import (
 )
 
 type PasteModel struct {
-	ID        uint `gorm:"primarykey"`
+	ID        uint
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	Author    uint
@@ -20,7 +20,7 @@ type PasteModel struct {
 }
 
 type UserModel struct {
-	ID           uint `gorm:"primarykey"`
+	ID           uint
 	CreatedAt    time.Time
 	LastLogin    time.Time
 	Username     string
