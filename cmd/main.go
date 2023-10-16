@@ -56,12 +56,15 @@ func main() {
 
 	log.Info("Server stopped")
 
-	if err := srv.Shutdown(context.Background()); err != nil {
-		log.Error("error occured on server shutting down", sl.Err(err))
-	}
 	if err := db.Close(); err != nil {
 		log.Error("error occured on database connection stopping:", sl.Err(err))
 	}
+	log.Info("Database connection closed")
+
+	if err := srv.Shutdown(context.Background()); err != nil {
+		log.Error("error occured on server shutting down", sl.Err(err))
+	}
+	log.Info("Server stopped")
 }
 
 func setupLogger(env string) *slog.Logger {

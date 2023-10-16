@@ -2,6 +2,8 @@ package blob
 
 import (
 	"PasteBay/pkg/utils/logger/sl"
+	"bufio"
+	"fmt"
 	"log/slog"
 	"os"
 	"strconv"
@@ -39,4 +41,27 @@ func (blob *BlobStorage) Save(content string) (string, error) {
 		return "", err
 	}
 	return filePath, nil
+}
+
+func (blob *BlobStorage) Delete(filePath string) error {
+	err := os.Remove(filePath)
+	if err != nil {
+		blob.Log.Error(fmt.Sprintf("[BLOB] - Could not delete file (%s) in blob storage", filePath), sl.Err(err))
+		return err
+	}
+	blob.Log.Info(fmt.Sprintf("[BLOB] - File (%s) in blob storage was deleted", filePath))
+	return nil
+}
+
+func (blob *BlobStorage) GetContent(filePath string) (string, error) {
+	file, err := os.Open(filePath)
+	if err != nil {
+		return "", err
+	}
+	content := ""
+	fileScanner := bufio.NewScanner(file)
+	for fileScanner.Scan() {
+		content += fileScanner.Text()
+	}
+	return content, nil
 }

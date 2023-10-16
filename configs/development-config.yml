@@ -1,8 +1,8 @@
 server:
   port: "9874"
   alias_path: "/paste"
-  host: "localhost"
 db:
+  host: "localhost"
   port: "5432"
   dbname: "pastebay"
   sslmode: "disable"

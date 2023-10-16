@@ -2,15 +2,20 @@ package database
 
 import (
 	"PasteBay/pkg/utils/logger/sl"
-	"database/sql"
 	"fmt"
+	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 	"log/slog"
 	"os"
 )
 
+const (
+	ErrorNotFound = "sql: no rows in result set"
+)
+
 type Database struct {
-	db *sql.DB
+	db  *sqlx.DB
+	Log *slog.Logger
 }
 
 type DatabaseLoad struct {
@@ -19,11 +24,11 @@ type DatabaseLoad struct {
 }
 
 func InitDatabase(cfg DatabaseLoad) *Database {
-	db, err := sql.Open("postgres",
-		fmt.Sprintf(
-			"user=%s password=%s host=%s port=%s dbname=%s sslmode=%s",
-			cfg.User, cfg.Password, cfg.Host, cfg.Port, cfg.DBName, cfg.SSLMode,
-		))
+	dsn := fmt.Sprintf(
+		"user=%s password=%s host=%s port=%s dbname=%s sslmode=%s",
+		cfg.User, cfg.Password, cfg.Host, cfg.Port, cfg.DBName, cfg.SSLMode,
+	)
+	db, err := sqlx.Connect("postgres", dsn)
 	if err != nil {
 		cfg.Log.Error("could not open database", sl.Err(err))
 		os.Exit(1)
@@ -36,16 +41,17 @@ func InitDatabase(cfg DatabaseLoad) *Database {
 	InitTables(db, cfg.Log)
 
 	return &Database{
-		db: db,
+		db:  db,
+		Log: cfg.Log,
 	}
 }
 
-func InitTables(db *sql.DB, log *slog.Logger) {
+func InitTables(db *sqlx.DB, log *slog.Logger) {
 	createUsersTable := `CREATE TABLE IF NOT EXISTS users(
     	id SERIAL PRIMARY KEY,
-    	created_at DATE,
-    	last_login DATE,
-    	username VARCHAR(200),
+    	created_at TIMESTAMP,
+    	last_login TIMESTAMP,
+    	username VARCHAR(200) UNIQUE,
     	email_addr VARCHAR(200),
     	pwd_hash VARCHAR(255)
 	)
@@ -58,14 +64,14 @@ func InitTables(db *sql.DB, log *slog.Logger) {
 
 	createPasteTable := `CREATE TABLE IF NOT EXISTS pastes(
     	id SERIAL PRIMARY KEY,
-    	created_at DATE,
-    	updated_at DATE,
+    	created_at TIMESTAMP,
+    	updated_at TIMESTAMP,
     	author INT DEFAULT -1,
     	
     	title VARCHAR(200),
-    	is_private BOOLEAN DEFAULT false,
-    	expire_time DATE,
+    	expire_time TIMESTAMP,
     	views_limit INT DEFAULT -1,
+    	views_counted INT DEFAULT 0,
     	
     	blob_src VARCHAR(255),
     	access_password VARCHAR(255)    	

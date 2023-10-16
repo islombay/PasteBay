@@ -1,4 +1,4 @@
-package handlers
+package pastes
 
 import (
 	"PasteBay/pkg/database"
@@ -11,17 +11,17 @@ import (
 	"net/http"
 )
 
-func addPaste(log *slog.Logger, db *database.Database, blob *blob.BlobStorage, aliasPath string) gin.HandlerFunc {
+func AddPaste(log *slog.Logger, db *database.Database, blob *blob.BlobStorage, aliasPath string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var addPasteReq models.RequestAddPaste
 		if err := c.BindJSON(&addPasteReq); err != nil {
-			response.ErrorResponse(c, http.StatusBadRequest, "bad request")
+			response.ErrorResponse(c, response.ErrorBadRequest)
 			return
 		}
 
 		blobPath, err := blob.Save(addPasteReq.Content)
 		if err != nil {
-			response.ErrorResponse(c, http.StatusInternalServerError, "could not save content")
+			response.ErrorResponse(c, response.ErrorServerError)
 			return
 		}
 		password := ""
@@ -29,25 +29,24 @@ func addPaste(log *slog.Logger, db *database.Database, blob *blob.BlobStorage, a
 			password = auth.GenerateHash(addPasteReq.AccessPassword)
 		}
 
-		_, alias, err := db.AddPaste(log, database.BodyAddPaste{
+		_, alias, err := db.AddPaste(database.BodyAddPaste{
 			Author:     0,
 			Title:      addPasteReq.Title,
-			IsPrivate:  addPasteReq.IsPrivate,
 			ExpireTime: addPasteReq.ExpireTime,
 			ViewsLimit: addPasteReq.ViewsLimit,
 			BlobSrc:    blobPath,
 			Password:   password,
 		})
 		if err != nil {
-			response.ErrorResponse(c, http.StatusInternalServerError, "content is not saved")
+			blob.Delete(blobPath)
+			response.ErrorResponse(c, response.ErrorServerError)
 			return
 		}
 
 		c.JSON(http.StatusOK, models.ResponseAddPaste{
-			Title:     addPasteReq.Title,
-			IsPrivate: addPasteReq.IsPrivate,
-			Content:   addPasteReq.Content,
-			Alias:     aliasPath + "/" + alias,
+			Title:   addPasteReq.Title,
+			Content: addPasteReq.Content,
+			Alias:   aliasPath + "/" + alias,
 		})
 	}
 }

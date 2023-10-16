@@ -3,32 +3,29 @@ package database
 import (
 	"PasteBay/pkg/utils/logger/sl"
 	"PasteBay/pkg/utils/random"
-	"log/slog"
 	"time"
 )
 
 type BodyAddPaste struct {
 	Author     int
 	Title      string
-	IsPrivate  bool
 	ExpireTime int64
 	ViewsLimit int
 	BlobSrc    string
 	Password   string
 }
 
-func (db *Database) AddPaste(log *slog.Logger, body BodyAddPaste) (int64, string, error) {
+func (db *Database) AddPaste(body BodyAddPaste) (int64, string, error) {
 	insertSQL := `INSERT INTO pastes (
                     created_at,
                     updated_at,
                     author,
                     title,
-                    is_private,
                     expire_time,
                     views_limit,
                     blob_src,
                     access_password
-                    ) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9)`
+                    ) VALUES($1, $2, $3, $4, $5, $6, $7, $8)`
 
 	if body.Author == 0 {
 		body.Author = -1
@@ -42,7 +39,7 @@ func (db *Database) AddPaste(log *slog.Logger, body BodyAddPaste) (int64, string
 
 	tx, err := db.db.Begin()
 	if err != nil {
-		log.Error("could not start transaction on adding paste")
+		db.Log.Error("could not start transaction on adding paste")
 		return 0, "", err
 	}
 	_, err = tx.Exec(
@@ -51,16 +48,15 @@ func (db *Database) AddPaste(log *slog.Logger, body BodyAddPaste) (int64, string
 		created_time,
 		body.Author,
 		body.Title,
-		body.IsPrivate,
 		expireTime,
 		body.ViewsLimit,
 		body.BlobSrc,
 		body.Password,
 	)
 	if err != nil {
-		log.Error("transaction add paste error into table pastes", sl.Err(err))
+		db.Log.Error("transaction add paste error into table pastes", sl.Err(err))
 		if err := tx.Rollback(); err != nil {
-			log.Error("transaction rollback error", sl.Err(err))
+			db.Log.Error("transaction rollback error", sl.Err(err))
 		}
 		return 0, "", err
 	}
@@ -74,25 +70,26 @@ func (db *Database) AddPaste(log *slog.Logger, body BodyAddPaste) (int64, string
 
 	err = tx.QueryRow("SELECT id FROM pastes WHERE blob_src = $1 AND created_at = $2", body.BlobSrc, created_time).Scan(&insertedID)
 	if err != nil {
-		log.Error("could not get the id of row", sl.Err(err))
+		db.Log.Error("could not get the id of row", sl.Err(err))
+		return 0, "", err
 	}
 
 	randomAlias := random.NewRandomString()
 
 	_, err = tx.Exec(query2, randomAlias, insertedID)
 	if err != nil {
-		log.Error("transaction add paste error into table pastes", sl.Err(err))
+		db.Log.Error("transaction add paste error into table pastes", sl.Err(err))
 		if err := tx.Rollback(); err != nil {
-			log.Error("transaction rollback error", sl.Err(err))
+			db.Log.Error("transaction rollback error", sl.Err(err))
 		}
 		return 0, "", err
 	}
 
 	err = tx.Commit()
 	if err != nil {
-		log.Error("could not commit transaction on add paste", sl.Err(err))
+		db.Log.Error("could not commit transaction on add paste", sl.Err(err))
 		if err := tx.Rollback(); err != nil {
-			log.Error("transaction rollback error", sl.Err(err))
+			db.Log.Error("transaction rollback error", sl.Err(err))
 		}
 		return 0, "", err
 	}
