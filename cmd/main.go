@@ -12,6 +12,7 @@ import (
 	"log/slog"
 	"os"
 	"os/signal"
+	"strconv"
 	"syscall"
 )
 
@@ -22,6 +23,7 @@ func main() {
 
 	if err := godotenv.Load(); err != nil {
 		log.Error("error loading env variables:", sl.Err(err))
+		os.Exit(1)
 	}
 
 	db := database.InitDatabase(database.DatabaseLoad{
@@ -35,9 +37,18 @@ func main() {
 		Log: log,
 	})
 
+	authCfg := config.Auth
+	value, err := strconv.Atoi(os.Getenv("AUTH_TOKENTTL"))
+	if err != nil {
+		log.Error("could not get tokenttl", sl.Err(err))
+		os.Exit(1)
+	}
+	authCfg.TokenTTL = value
+	authCfg.SecretKey = os.Getenv("AUTH_SECRETKEY")
+
 	blobStorage := blob.NewBlobStorage(config.Blob.Path, log)
 	engine := handlers.InitRoutes(
-		handlers.RouteInit{log, db, blobStorage, config.Server},
+		handlers.RouteInit{log, db, blobStorage, config.Server, authCfg},
 	)
 
 	srv := new(PasteBay.Server)

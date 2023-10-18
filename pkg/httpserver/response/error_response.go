@@ -14,6 +14,8 @@ const (
 	ErrorCouldNotCreateUser = "could_not_create_user"
 	ErrorAuthPassword       = "invalid_password_type"
 	ErrorAuthUsername       = "invalid_username_type"
+	ErrorLoginPassword      = "invalid_password_type_login"
+	ErrorLoginUsername      = "invalid_username_type_login"
 )
 
 type responsesStruct struct {
@@ -56,6 +58,14 @@ var responses = map[string]responsesStruct{
 	},
 	ErrorAuthUsername: {
 		"Username should consist of 5 characters, that are: only english letters and underscores",
+		http.StatusBadRequest,
+	},
+	ErrorLoginPassword: {
+		"Password should consist at least of 8 characters",
+		http.StatusBadRequest,
+	},
+	ErrorLoginUsername: {
+		"Invalid Username",
 		http.StatusBadRequest,
 	},
 }

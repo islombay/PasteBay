@@ -17,6 +17,14 @@ type Config struct {
 	Server         ServerConfig
 	DB             dbConfig
 	Blob           blobStorage
+	Auth           AuthConfig
+}
+
+type AuthConfig struct {
+	UsernameLength int
+	PasswordLength int
+	TokenTTL       int // seconds
+	SecretKey      string
 }
 
 type dbConfig struct {
@@ -53,6 +61,10 @@ func InitConfig() *Config {
 		},
 		Blob: blobStorage{
 			Path: viper.GetString("blob.path"),
+		},
+		Auth: AuthConfig{
+			UsernameLength: viper.GetInt("auth.usernameLength"),
+			PasswordLength: viper.GetInt("auth.passwordLength"),
 		},
 	}
 }

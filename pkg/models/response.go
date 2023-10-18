@@ -24,3 +24,8 @@ type ResponseGetPaste struct {
 type ResponseRegister struct {
 	Message bool `json:"ok"`
 }
+
+type ResponseLogin struct {
+	Token   string `json:"token"`
+	Message bool   `json:"ok"`
+}
