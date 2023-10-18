@@ -10,6 +10,10 @@ const (
 	ErrorServerError        = "server_error"
 	ErrorNotFound           = "not_found"
 	ErrorInvalidCredentials = "invalid_credentials"
+	ErrorUserExists         = "username_already_exists"
+	ErrorCouldNotCreateUser = "could_not_create_user"
+	ErrorAuthPassword       = "invalid_password_type"
+	ErrorAuthUsername       = "invalid_username_type"
 )
 
 type responsesStruct struct {
@@ -37,6 +41,22 @@ var responses = map[string]responsesStruct{
 	ErrorInvalidCredentials: {
 		"Invalid Credentials",
 		http.StatusForbidden,
+	},
+	ErrorUserExists: {
+		"Username is already taken",
+		http.StatusNotAcceptable,
+	},
+	ErrorCouldNotCreateUser: {
+		"Could not create user",
+		http.StatusInternalServerError,
+	},
+	ErrorAuthPassword: {
+		"Password should consist at least of 8 characters",
+		http.StatusBadRequest,
+	},
+	ErrorAuthUsername: {
+		"Username should consist of 5 characters, that are: only english letters and underscores",
+		http.StatusBadRequest,
 	},
 }
 

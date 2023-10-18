@@ -20,3 +20,7 @@ type ResponseGetPaste struct {
 	Content    string `json:"content"`
 	ViewsCount uint   `json:"viewed"`
 }
+
+type ResponseRegister struct {
+	Message bool `json:"ok"`
+}
