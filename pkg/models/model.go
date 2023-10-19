@@ -20,9 +20,9 @@ type PasteModel struct {
 
 type UserModel struct {
 	ID           uint
-	CreatedAt    time.Time
-	LastLogin    time.Time
+	CreatedAt    time.Time `db:"created_at"`
+	LastLogin    time.Time `db:"last_login"`
 	Username     string
-	EmailAddr    string
-	PasswordHash string
+	EmailAddr    string `db:"email_addr"`
+	PasswordHash string `db:"pwd_hash"`
 }

@@ -5,6 +5,7 @@ import (
 	"PasteBay/pkg/database"
 	auth2 "PasteBay/pkg/httpserver/handlers/auth"
 	"PasteBay/pkg/httpserver/handlers/pastes"
+	"PasteBay/pkg/httpserver/middlewares"
 	"PasteBay/pkg/utils/blob"
 	"github.com/gin-gonic/gin"
 	"log/slog"
@@ -20,6 +21,8 @@ type RouteInit struct {
 
 func InitRoutes(r RouteInit) *gin.Engine {
 	router := gin.Default()
+
+	router.Use(middlewares.MiddlewareAuth(r.AuthCfg))
 
 	router.GET("/paste/:alias", pastes.GetPaste(r.Log, r.DB, r.Blob))
 	router.POST("/paste/:alias", pastes.GetPaste(r.Log, r.DB, r.Blob))

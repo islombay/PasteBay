@@ -2,10 +2,13 @@ package pastes
 
 import (
 	"PasteBay/pkg/database"
+	auth2 "PasteBay/pkg/httpserver/handlers/auth"
 	"PasteBay/pkg/httpserver/response"
 	"PasteBay/pkg/models"
 	"PasteBay/pkg/utils/auth"
 	"PasteBay/pkg/utils/blob"
+	"PasteBay/pkg/utils/logger/sl"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"log/slog"
 	"net/http"
@@ -29,8 +32,23 @@ func AddPaste(log *slog.Logger, db *database.Database, blob *blob.BlobStorage, a
 			password = auth.GenerateHash(addPasteReq.AccessPassword)
 		}
 
+		authU, isAuth := c.Get(auth2.MiddlewareAuthUsername)
+		author := 0
+		if isAuth {
+			user, err := db.GetUserByUsername(authU.(string))
+			if err != nil {
+				if err.Error() == database.DBNotFound {
+					log.Error(fmt.Sprintf("Could not find the user in the db by username, user: %s", authU.(string)), sl.Err(err))
+				} else {
+					log.Error("Could not get the user by username", sl.Err(err))
+				}
+			} else {
+				author = int(user.ID)
+			}
+		}
+
 		_, alias, err := db.AddPaste(database.BodyAddPaste{
-			Author:     0,
+			Author:     author,
 			Title:      addPasteReq.Title,
 			ExpireTime: addPasteReq.ExpireTime,
 			ViewsLimit: addPasteReq.ViewsLimit,

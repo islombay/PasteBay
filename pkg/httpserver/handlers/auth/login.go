@@ -12,6 +12,10 @@ import (
 	"net/http"
 )
 
+const (
+	MiddlewareAuthUsername = "auth_username"
+)
+
 func LoginHandler(log *slog.Logger, db *database.Database, authCfg configs.AuthConfig) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var reqBody models.RequestLogin

@@ -63,5 +63,6 @@ func (blob *BlobStorage) GetContent(filePath string) (string, error) {
 	for fileScanner.Scan() {
 		content += fileScanner.Text()
 	}
+	file.Close()
 	return content, nil
 }

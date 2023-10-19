@@ -32,18 +32,22 @@ func GetPaste(log *slog.Logger, db *database.Database, blob *blob.BlobStorage) g
 			if err.Error() == database.ErrorNotFound {
 				response.ErrorResponse(c, response.ErrorNotFound)
 			} else {
+				log.Error("Could not get paste from db", sl.Err(err))
 				response.ErrorResponse(c, response.ErrorServerError)
 			}
 			return
 		}
 
+		// TODO: blob src do not exists erorr
 		// TODO: Expire_time implementation
 		if !(pasteObject.ExpireTime.Equal(pasteObject.CreatedAt)) {
 			now := time.Now()
 
-			fmt.Println(pasteObject.ExpireTime.Compare(now))
-
+			fmt.Println(pasteObject.ExpireTime, now)
+			fmt.Printf("-------\nTime After: %v\n--------\n", now.After(pasteObject.ExpireTime))
+			fmt.Printf("-------\nTime Before: %v\n--------\n", now.Before(pasteObject.ExpireTime))
 			if !pasteObject.ExpireTime.After(now) {
+				log.Debug("Paste time up")
 				blob_src, err := db.DeletePaste(pasteObject.ID)
 				if err != nil {
 					log.Error(fmt.Sprintf("Could not delete paste (id: %s)", pasteObject.ID), sl.Err(err))
@@ -67,6 +71,7 @@ func GetPaste(log *slog.Logger, db *database.Database, blob *blob.BlobStorage) g
 		}
 
 		if (pasteObject.ViewsLimit <= int64(pasteObject.ViewsCount)) && pasteObject.ViewsLimit != -1 {
+			log.Debug("Paste view limit reached")
 			blob_src, err := db.DeletePaste(pasteObject.ID)
 			if err != nil {
 				log.Error(fmt.Sprintf("Could not delete paste (id: %s)", pasteObject.ID), sl.Err(err))
@@ -86,6 +91,8 @@ func GetPaste(log *slog.Logger, db *database.Database, blob *blob.BlobStorage) g
 		blobContent, err := blob.GetContent(pasteObject.BlobSrc)
 		if err != nil {
 			log.Error(fmt.Sprintf("Could not load the content of the blob (src: %s)", pasteObject.BlobSrc), sl.Err(err))
+			response.ErrorResponse(c, response.ErrorNotFound)
+			return
 		}
 
 		response := models.ResponseGetPaste{
