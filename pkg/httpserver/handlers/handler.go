@@ -29,6 +29,7 @@ func InitRoutes(r RouteInit) *gin.Engine {
 
 	api := router.Group("/api")
 	{
+		// CREATE POST
 		api.POST("/paste", pastes.AddPaste(r.Log, r.DB, r.Blob, r.Server.AliasPath))
 	}
 

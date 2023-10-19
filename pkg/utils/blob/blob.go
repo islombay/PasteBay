@@ -30,9 +30,19 @@ func NewBlobStorage(path string, log *slog.Logger) *BlobStorage {
 	}
 }
 
+func (blob *BlobStorage) checkBlobPath() {
+	if _, err := os.Stat(blob.Path); os.IsNotExist(err) {
+		if err := os.MkdirAll(blob.Path, os.ModePerm); err != nil {
+			blob.Log.Error("could not create directory for blob storage", sl.Err(err))
+			os.Exit(1)
+		}
+	}
+}
+
 func (blob *BlobStorage) Save(content string) (string, error) {
 	fileName := strconv.FormatInt(time.Now().Unix(), 10)
 	filePath := blob.Path + "/" + fileName + ".txt"
+	blob.checkBlobPath()
 
 	os.Getwd()
 	err := os.WriteFile(filePath, []byte(content), 0755)

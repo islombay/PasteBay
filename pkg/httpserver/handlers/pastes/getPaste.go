@@ -11,7 +11,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"log/slog"
 	"net/http"
-	"strconv"
 	"time"
 )
 
@@ -98,10 +97,22 @@ func GetPaste(log *slog.Logger, db *database.Database, blob *blob.BlobStorage) g
 		response := models.ResponseGetPaste{
 			CreatedAt:  pasteObject.CreatedAt,
 			UpdatedAt:  pasteObject.UpdatedAt,
-			Author:     strconv.FormatInt(pasteObject.Author, 10),
 			Title:      pasteObject.Title,
 			ViewsCount: pasteObject.ViewsCount,
 			Content:    blobContent,
+		}
+		if int(pasteObject.Author) != -1 {
+			log.Debug("Author exists")
+			author_obj, err := db.GetUserByID(int(pasteObject.Author))
+			if err != nil {
+				log.Error("Could not get user by id for get paste function", sl.Err(err))
+			} else {
+				author_res := models.ResponseGetPasteAuthor{
+					LastLogin: author_obj.LastLogin,
+					Username:  author_obj.Username,
+				}
+				response.Author = author_res
+			}
 		}
 		c.JSON(http.StatusOK, response)
 	}

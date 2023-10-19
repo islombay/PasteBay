@@ -9,16 +9,18 @@ type ResponseAddPaste struct {
 }
 
 type ResponseGetPasteAuthor struct {
+	LastLogin time.Time `json:"last_login"`
+	Username  string    `json:"username"`
 }
 
 type ResponseGetPaste struct {
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 
-	Author     string `json:"author"`
-	Title      string `json:"title"`
-	Content    string `json:"content"`
-	ViewsCount uint   `json:"viewed"`
+	Author     interface{} `json:"author,omitempty"`
+	Title      string      `json:"title"`
+	Content    string      `json:"content"`
+	ViewsCount uint        `json:"viewed"`
 }
 
 type ResponseRegister struct {
