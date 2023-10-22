@@ -10,6 +10,17 @@ import (
 	"net/http"
 )
 
+// RegisterHandler godoc
+// @Summary Register
+// @Tags account
+// @Description Register new user
+// @ID register_user
+// @Accept json
+// @Produce json
+// @Param input body models.RequestRegister true "register info"
+// @Success 200 {object} models.ResponseRegister
+// @Failure 400,406,500 {object} response.errorResponse
+// @Router /auth/register [post]
 func RegisterHandler(log *slog.Logger, db *database.Database) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var reqBody models.RequestRegister

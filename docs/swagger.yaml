@@ -1,0 +1,299 @@
+basePath: /
+definitions:
+  models.RequestAddPaste:
+    properties:
+      content:
+        type: string
+      expire_time:
+        description: get the amount of seconds
+        type: integer
+      password:
+        type: string
+      title:
+        type: string
+      view_limit:
+        type: integer
+    required:
+    - content
+    type: object
+  models.RequestDeletePaste:
+    properties:
+      alias:
+        type: string
+    required:
+    - alias
+    type: object
+  models.RequestGetPaste:
+    properties:
+      password:
+        type: string
+    required:
+    - password
+    type: object
+  models.RequestLogin:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  models.RequestRegister:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - email
+    - password
+    - username
+    type: object
+  models.ResponseAddPaste:
+    properties:
+      alias:
+        type: string
+      content:
+        type: string
+      title:
+        type: string
+    type: object
+  models.ResponseDeletePaste:
+    properties:
+      ok:
+        type: boolean
+    type: object
+  models.ResponseGetPaste:
+    properties:
+      author: {}
+      content:
+        type: string
+      created_at:
+        type: string
+      title:
+        type: string
+      updated_at:
+        type: string
+      viewed:
+        type: integer
+    type: object
+  models.ResponseLogin:
+    properties:
+      ok:
+        type: boolean
+      token:
+        type: string
+    type: object
+  models.ResponseRegister:
+    properties:
+      ok:
+        type: boolean
+    type: object
+  response.errorResponse:
+    properties:
+      message:
+        type: string
+    type: object
+host: localhost:9874
+info:
+  contact: {}
+  description: Simple server for pasting and sharing url link to them
+  title: Paste Bay
+  version: "1.0"
+paths:
+  /api/paste:
+    delete:
+      consumes:
+      - application/json
+      description: Delete paste using ID
+      operationId: delete_paste
+      parameters:
+      - description: paste info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/models.RequestDeletePaste'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseDeletePaste'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+      summary: Delete Paste
+      tags:
+      - paste
+    get:
+      consumes:
+      - application/json
+      description: Using alias of the paste, get paste
+      operationId: get_paste
+      parameters:
+      - description: paste info
+        in: body
+        name: input
+        schema:
+          $ref: '#/definitions/models.RequestGetPaste'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseGetPaste'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+      summary: Get paste
+      tags:
+      - paste
+    post:
+      consumes:
+      - application/json
+      description: Using alias of the paste, get paste
+      operationId: get_paste
+      parameters:
+      - description: paste info
+        in: body
+        name: input
+        schema:
+          $ref: '#/definitions/models.RequestGetPaste'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseGetPaste'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+      summary: Get paste
+      tags:
+      - paste
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Login
+      operationId: login_user
+      parameters:
+      - description: login info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/models.RequestLogin'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseLogin'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+      summary: Login
+      tags:
+      - account
+  /auth/register:
+    post:
+      consumes:
+      - application/json
+      description: Register new user
+      operationId: register_user
+      parameters:
+      - description: register info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/models.RequestRegister'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseRegister'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "406":
+          description: Not Acceptable
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+      summary: Register
+      tags:
+      - account
+swagger: "2.0"

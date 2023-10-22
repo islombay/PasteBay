@@ -14,6 +14,18 @@ import (
 	"time"
 )
 
+// GetPaste godoc
+// @Summary Get paste
+// @Tags paste
+// @Description Using alias of the paste, get paste
+// @ID get_paste
+// @Accept json
+// @Produce json
+// @Param input body models.RequestGetPaste false "paste info"
+// @Success 200 {object} models.ResponseGetPaste
+// @Failure 400,403,404,500 {object} response.errorResponse
+// @Router /api/paste [get]
+// @Router /api/paste [post]
 func GetPaste(log *slog.Logger, db *database.Database, blob *blob.BlobStorage) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var reqbody models.RequestGetPaste
@@ -37,7 +49,6 @@ func GetPaste(log *slog.Logger, db *database.Database, blob *blob.BlobStorage) g
 			return
 		}
 
-		// TODO: blob src do not exists erorr
 		// TODO: Expire_time implementation
 		if !(pasteObject.ExpireTime.Equal(pasteObject.CreatedAt)) {
 			now := time.Now()

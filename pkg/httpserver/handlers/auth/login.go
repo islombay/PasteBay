@@ -16,6 +16,17 @@ const (
 	MiddlewareAuthUsername = "auth_username"
 )
 
+// LoginHandler godoc
+// @Summary Login
+// @Tags account
+// @Description Login
+// @ID login_user
+// @Accept json
+// @Produce json
+// @Param input body models.RequestLogin true "login info"
+// @Success 200 {object} models.ResponseLogin
+// @Failure 400,403,404,500 {object} response.errorResponse
+// @Router /auth/login [post]
 func LoginHandler(log *slog.Logger, db *database.Database, authCfg configs.AuthConfig) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var reqBody models.RequestLogin

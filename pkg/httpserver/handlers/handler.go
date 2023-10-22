@@ -2,12 +2,15 @@ package handlers
 
 import (
 	"PasteBay/configs"
+	_ "PasteBay/docs"
 	"PasteBay/pkg/database"
 	auth2 "PasteBay/pkg/httpserver/handlers/auth"
 	"PasteBay/pkg/httpserver/handlers/pastes"
 	"PasteBay/pkg/httpserver/middlewares"
 	"PasteBay/pkg/utils/blob"
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 	"log/slog"
 )
 
@@ -41,6 +44,9 @@ func InitRoutes(r RouteInit) *gin.Engine {
 		auth.POST("/register", auth2.RegisterHandler(r.Log, r.DB))
 		auth.POST("/login", auth2.LoginHandler(r.Log, r.DB, r.AuthCfg))
 	}
+
+	router.GET("/swagger", swaggerRedirect)
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	return router
 }

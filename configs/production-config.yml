@@ -1,6 +1,13 @@
-port: "9856"
+server:
+  port: "8080"
+  alias_path: "/paste"
 db:
-  host: "db"
-  port: "5412"
+  host: "localhost"
+  port: "5432"
   dbname: "pastebay"
   sslmode: "disable"
+blob:
+  path: "data"
+auth:
+  usernameLength: 5
+  passwordLength: 8

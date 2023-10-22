@@ -13,6 +13,17 @@ import (
 	"net/http"
 )
 
+// DeletePasteHandler godoc
+// @Summary Delete Paste
+// @Tags paste
+// @Description Delete paste using ID
+// @ID delete_paste
+// @Accept json
+// @Produce json
+// @Param input body models.RequestDeletePaste true "paste info"
+// @Success 200 {object} models.ResponseDeletePaste
+// @Failure 400,401,404,403,500 {object} response.errorResponse
+// @Router /api/paste [delete]
 func DeletePasteHandler(log *slog.Logger, db *database.Database, blob *blob.BlobStorage) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var reqBody models.RequestDeletePaste

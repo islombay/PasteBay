@@ -16,6 +16,13 @@ import (
 	"syscall"
 )
 
+// @title Paste Bay
+// @version 1.0
+// @description Simple server for pasting and sharing url link to them
+
+// @host localhost:9874
+// @BasePath /
+
 func main() {
 	config := configs.InitConfig()
 

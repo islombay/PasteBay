@@ -14,6 +14,17 @@ import (
 	"net/http"
 )
 
+// AddPaste godoc
+// @Summary Add Paste
+// @Tags paste
+// @Description Add paste and return short alias
+// @ID add_paste
+// @Accept json
+// @Produce json
+// @Param input body models.RequestAddPaste true "paste info"
+// @Success 200 {object} models.ResponseAddPaste
+// @Failure 400,500 {object} response.errorResponse
+// @Router /api/paste [post]
 func AddPaste(log *slog.Logger, db *database.Database, blob *blob.BlobStorage, aliasPath string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var addPasteReq models.RequestAddPaste
