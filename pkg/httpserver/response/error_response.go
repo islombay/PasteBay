@@ -16,6 +16,8 @@ const (
 	ErrorAuthUsername       = "invalid_username_type"
 	ErrorLoginPassword      = "invalid_password_type_login"
 	ErrorLoginUsername      = "invalid_username_type_login"
+	ErrorUnauthorized       = "unauthorized"
+	ErrorForbidden          = "forbidden"
 )
 
 type responsesStruct struct {
@@ -67,6 +69,14 @@ var responses = map[string]responsesStruct{
 	ErrorLoginUsername: {
 		"Invalid Username",
 		http.StatusBadRequest,
+	},
+	ErrorUnauthorized: {
+		"Unauthorized",
+		http.StatusUnauthorized,
+	},
+	ErrorForbidden: {
+		"Forbidden",
+		http.StatusForbidden,
 	},
 }
 

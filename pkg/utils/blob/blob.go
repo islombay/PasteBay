@@ -59,7 +59,7 @@ func (blob *BlobStorage) Delete(filePath string) error {
 		blob.Log.Error(fmt.Sprintf("[BLOB] - Could not delete file (%s) in blob storage", filePath), sl.Err(err))
 		return err
 	}
-	blob.Log.Info(fmt.Sprintf("[BLOB] - File (%s) in blob storage was deleted", filePath))
+	blob.Log.Debug(fmt.Sprintf("[BLOB] - File (%s) in blob storage was deleted", filePath))
 	return nil
 }
 

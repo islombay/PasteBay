@@ -31,3 +31,7 @@ type ResponseLogin struct {
 	Token   string `json:"token"`
 	Message bool   `json:"ok"`
 }
+
+type ResponseDeletePaste struct {
+	Message bool `json:"ok"`
+}

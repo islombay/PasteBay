@@ -31,6 +31,9 @@ func InitRoutes(r RouteInit) *gin.Engine {
 	{
 		// CREATE POST
 		api.POST("/paste", pastes.AddPaste(r.Log, r.DB, r.Blob, r.Server.AliasPath))
+
+		// DELETE POST FOR AUTHENTICATED USERS
+		api.DELETE("/paste", pastes.DeletePasteHandler(r.Log, r.DB, r.Blob))
 	}
 
 	auth := router.Group("/auth")

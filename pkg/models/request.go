@@ -22,3 +22,7 @@ type RequestLogin struct {
 	Username string `json:"username" binding:"required"`
 	Password string `json:"password" binding:"required"`
 }
+
+type RequestDeletePaste struct {
+	Alias string `json:"alias" binding:"required"`
+}
