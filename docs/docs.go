@@ -16,64 +16,8 @@ const docTemplate = `{
     "basePath": "{{.BasePath}}",
     "paths": {
         "/api/paste": {
-            "get": {
-                "description": "Using alias of the paste, get paste",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "paste"
-                ],
-                "summary": "Get paste",
-                "operationId": "get_paste",
-                "parameters": [
-                    {
-                        "description": "paste info",
-                        "name": "input",
-                        "in": "body",
-                        "schema": {
-                            "$ref": "#/definitions/models.RequestGetPaste"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.ResponseGetPaste"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/response.errorResponse"
-                        }
-                    },
-                    "403": {
-                        "description": "Forbidden",
-                        "schema": {
-                            "$ref": "#/definitions/response.errorResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/response.errorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.errorResponse"
-                        }
-                    }
-                }
-            },
             "post": {
-                "description": "Using alias of the paste, get paste",
+                "description": "Add paste and return short alias",
                 "consumes": [
                     "application/json"
                 ],
@@ -83,15 +27,16 @@ const docTemplate = `{
                 "tags": [
                     "paste"
                 ],
-                "summary": "Get paste",
-                "operationId": "get_paste",
+                "summary": "Add Paste",
+                "operationId": "add_paste",
                 "parameters": [
                     {
                         "description": "paste info",
                         "name": "input",
                         "in": "body",
+                        "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.RequestGetPaste"
+                            "$ref": "#/definitions/models.RequestAddPaste"
                         }
                     }
                 ],
@@ -99,23 +44,11 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.ResponseGetPaste"
+                            "$ref": "#/definitions/models.ResponseAddPaste"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/response.errorResponse"
-                        }
-                    },
-                    "403": {
-                        "description": "Forbidden",
-                        "schema": {
-                            "$ref": "#/definitions/response.errorResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
                         "schema": {
                             "$ref": "#/definitions/response.errorResponse"
                         }
@@ -129,6 +62,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Delete paste using ID",
                 "consumes": [
                     "application/json"
@@ -303,6 +241,120 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/paste/:alias": {
+            "get": {
+                "description": "Using alias of the paste, get paste",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "paste"
+                ],
+                "summary": "Get paste",
+                "operationId": "get_paste",
+                "parameters": [
+                    {
+                        "description": "paste info",
+                        "name": "input",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/models.RequestGetPaste"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseGetPaste"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.errorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/response.errorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/response.errorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.errorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Using alias of the paste, get paste",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "paste"
+                ],
+                "summary": "Get paste",
+                "operationId": "get_paste",
+                "parameters": [
+                    {
+                        "description": "paste info",
+                        "name": "input",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/models.RequestGetPaste"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseGetPaste"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.errorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/response.errorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/response.errorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.errorResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -455,6 +507,13 @@ const docTemplate = `{
                     "type": "string"
                 }
             }
+        }
+    },
+    "securityDefinitions": {
+        "ApiKeyAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
     }
 }`

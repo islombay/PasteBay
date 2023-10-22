@@ -15,6 +15,7 @@ import (
 
 // DeletePasteHandler godoc
 // @Summary Delete Paste
+// @Security ApiKeyAuth
 // @Tags paste
 // @Description Delete paste using ID
 // @ID delete_paste

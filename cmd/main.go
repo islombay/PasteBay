@@ -23,6 +23,9 @@ import (
 // @host localhost:9874
 // @BasePath /
 
+// @securityDefinitions.apiKey ApiKeyAuth
+// @in header
+// @name Authorization
 func main() {
 	config := configs.InitConfig()
 

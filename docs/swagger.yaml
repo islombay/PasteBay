@@ -145,81 +145,39 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.errorResponse'
+      security:
+      - ApiKeyAuth: []
       summary: Delete Paste
-      tags:
-      - paste
-    get:
-      consumes:
-      - application/json
-      description: Using alias of the paste, get paste
-      operationId: get_paste
-      parameters:
-      - description: paste info
-        in: body
-        name: input
-        schema:
-          $ref: '#/definitions/models.RequestGetPaste'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.ResponseGetPaste'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/response.errorResponse'
-        "403":
-          description: Forbidden
-          schema:
-            $ref: '#/definitions/response.errorResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/response.errorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.errorResponse'
-      summary: Get paste
       tags:
       - paste
     post:
       consumes:
       - application/json
-      description: Using alias of the paste, get paste
-      operationId: get_paste
+      description: Add paste and return short alias
+      operationId: add_paste
       parameters:
       - description: paste info
         in: body
         name: input
+        required: true
         schema:
-          $ref: '#/definitions/models.RequestGetPaste'
+          $ref: '#/definitions/models.RequestAddPaste'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.ResponseGetPaste'
+            $ref: '#/definitions/models.ResponseAddPaste'
         "400":
           description: Bad Request
-          schema:
-            $ref: '#/definitions/response.errorResponse'
-        "403":
-          description: Forbidden
-          schema:
-            $ref: '#/definitions/response.errorResponse'
-        "404":
-          description: Not Found
           schema:
             $ref: '#/definitions/response.errorResponse'
         "500":
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.errorResponse'
-      summary: Get paste
+      summary: Add Paste
       tags:
       - paste
   /auth/login:
@@ -296,4 +254,84 @@ paths:
       summary: Register
       tags:
       - account
+  /paste/:alias:
+    get:
+      consumes:
+      - application/json
+      description: Using alias of the paste, get paste
+      operationId: get_paste
+      parameters:
+      - description: paste info
+        in: body
+        name: input
+        schema:
+          $ref: '#/definitions/models.RequestGetPaste'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseGetPaste'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+      summary: Get paste
+      tags:
+      - paste
+    post:
+      consumes:
+      - application/json
+      description: Using alias of the paste, get paste
+      operationId: get_paste
+      parameters:
+      - description: paste info
+        in: body
+        name: input
+        schema:
+          $ref: '#/definitions/models.RequestGetPaste'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseGetPaste'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+      summary: Get paste
+      tags:
+      - paste
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"
